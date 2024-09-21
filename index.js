@@ -27,8 +27,8 @@ wss.on('connection', function connection(ws) {
             const y = message.y;
             const width = message.width;
             const height = message.height;
-            const xPer = parseInt((x/width) * 100)
-            const yPer = parseInt((y/height) * 100)
+            const xPer = (x/width) * 100
+            const yPer = (y/height) * 100
 
             wss.clients.forEach(function each(client) {
                 if (client !== ws && client.readyState === ws.OPEN) {
