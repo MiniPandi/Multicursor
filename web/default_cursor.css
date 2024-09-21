@@ -23,8 +23,7 @@ html {
     width: 50px;
     border-radius: 50%;
     background-color: #fff;
-    animation: fadeOut 1s forwards;
-    animation-delay: 0.5s;
+    animation: fadeOut 100ms forwards;
     z-index: -1;
 }
 

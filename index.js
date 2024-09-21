@@ -22,6 +22,10 @@ wss.on('connection', function connection(ws) {
     ws.on('message', function incoming(m) {
         try {
             var message = JSON.parse(m)
+            if (message.ping) {
+                const pingTime = message.ping;
+                ws.send(JSON.stringify({ pong: pingTime }));
+            }
             if (!message.x || !message.y || !message.width || !message.height) return
             const x = message.x;
             const y = message.y;
