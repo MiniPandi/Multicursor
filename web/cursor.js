@@ -15,8 +15,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 height: window.innerHeight
             }));
         }
-        ownCursorDiv.style.left = e.clientX + 'px';
-        ownCursorDiv.style.top = e.clientY + 'px';
+        ownCursorDiv.style.left = (e.clientX - (ownCursorDiv.offsetWidth / 2)) + 'px';
+        ownCursorDiv.style.top = (e.clientY - (ownCursorDiv.offsetHeight / 2)) + 'px';
     });
 
     ws.onmessage = e => {
@@ -39,8 +39,8 @@ document.addEventListener('DOMContentLoaded', () => {
             if (div) {
                 var xPx = data.x / 100 * window.innerWidth;
                 var yPx = data.y / 100 * window.innerHeight;
-                xPx = xPx - div.style.width
-                yPx = yPx - div.style.height
+                xPx = xPx - (div.offsetWidth / 2)
+                yPx = yPx - (div.offsetHeight / 2)
                 div.style.left = xPx + 'px';
                 div.style.top = yPx + 'px';
             }
