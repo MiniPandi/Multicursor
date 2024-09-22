@@ -16,9 +16,14 @@ wss.on('connection', function connection(ws) {
             }
         })
     if (users[ws.url]) {
-        users[ws.url].forEach(user => {
-            ws.send(JSON.stringify({ type:"add", id:user.id }));
-        })
+        for (const url in users) {
+            for (const ws in users[url]) {
+              const userId = users[url][ws].id;
+              if (users[url][ws] && userId) {
+                ws.send(JSON.stringify({ type:"add", id:userId }));
+              }
+            }
+          }
     }
     ws.on('close', function close() {
         wss.clients.forEach(function each(client) {
