@@ -7,32 +7,37 @@ app.use(express.static('web'))
 const wss = new ws.Server({ port: 8080 })
 
 const users = []
+const maxUpdatesPerSecondPerUser = 100
 
 wss.on('connection', function connection(ws) {
-    setUser((users.lenght || 0) + 1,ws,ws.url)
-        wss.clients.forEach(function each(client) {
-            if (client !== ws && client.readyState === ws.OPEN) {
-                client.send(JSON.stringify({ type:"add", id:getUser(ws,ws.url) }));
-            }
-        })
+    setUser((users.length || 0) + 1, ws, ws.url)
+    wss.clients.forEach(function each(client) {
+        if (client !== ws && client.readyState === ws.OPEN) {
+            client.send(JSON.stringify({ type: "add", id: getUser(ws, ws.url) }));
+        }
+    })
     if (users[ws.url]) {
         for (const url in users) {
             for (const ws1 in users[url]) {
-              const userId = users[url][ws1].id;
-              if (users[url][ws1] && userId) {
-                ws.send(JSON.stringify({ type:"add", id:userId }));
-              }
+                const userId = users[url][ws1].id;
+                if (users[url][ws1] && userId) {
+                    ws.send(JSON.stringify({ type: "add", id: userId }));
+                }
             }
-          }
+        }
     }
+    ws.updateCount = 0
+    ws.lastUpdateTimestamp = 0
+
     ws.on('close', function close() {
         wss.clients.forEach(function each(client) {
             if (client !== ws && client.readyState === ws.OPEN) {
-                client.send(JSON.stringify({ type:"remove", id:getUser(ws,ws.url) }));
+                client.send(JSON.stringify({ type: "remove", id: getUser(ws, ws.url) }));
             }
         })
-        removeUser(ws,ws.url)
+        removeUser(ws, ws.url)
     })
+
     ws.on('message', function incoming(m) {
         try {
             var message = JSON.parse(m)
@@ -49,24 +54,34 @@ wss.on('connection', function connection(ws) {
             const xPer = (x/width) * 100
             const yPer = (y/height) * 100
 
+            const now = Date.now()
+            if (ws.updateCount >= maxUpdatesPerSecondPerUser && now - ws.lastUpdateTimestamp < 1000) {
+                return
+            }
+            ws.updateCount++
+            ws.lastUpdateTimestamp = now
+
             wss.clients.forEach(function each(client) {
                 if (client !== ws && client.readyState === ws.OPEN) {
-                    client.send(JSON.stringify({ type:"update", x:xPer, y:yPer, id:getUser(ws,ws.url) }));
+                    client.send(JSON.stringify({ type: "update", x: xPer, y: yPer, id: getUser(ws, ws.url) }));
                 }
             })
         } catch (error) {}
     })
 })
-function setUser(id,ws,url){
-    if(!users[url]) users[url] = {}
-    users[url][ws] = {id}
+
+function setUser(id, ws, url) {
+    if (!users[url]) users[url] = {}
+    users[url][ws] = { id }
 }
-function removeUser(ws,url){
-    if(!users[url]) users[url] = {}
+
+function removeUser(ws, url) {
+    if (!users[url]) users[url] = {}
     delete users[url][ws]
 }
-function getUser(ws,url){
-    if(!users[url]) users[url] = {}
+
+function getUser(ws, url) {
+    if (!users[url]) users[url] = {}
     if (!users[url][ws]) return null
     return users[url][ws].id
 }
