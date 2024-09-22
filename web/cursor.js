@@ -4,7 +4,7 @@ var lastPingTime = 0;
 var ws = null;
 
 document.addEventListener('DOMContentLoaded', () => {
-    ws = new WebSocket('wss://147.185.221.22:55615');
+    ws = new WebSocket('wss://multicursorwebsocket.minipandi.net');
     const ownCursorDiv = document.createElement('div');
     ownCursorDiv.style.position = 'fixed';
     ownCursorDiv.style.backgroundColor = randomColor();
