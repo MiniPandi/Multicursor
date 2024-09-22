@@ -11,7 +11,15 @@
 <body>
     <div>
         <h1>Wellcome to Multicursor</h1>
+        <p>Your Ping is <span id="ping"></span></p>
     </div>
 </body>
 <script src="cursor.js"></script>
+<script>
+    var pingRefreshTime = 1000;
+    setInterval(() => {
+        document.getElementById('ping').innerText = Date.now() - lastPingTime - pingRefreshTime + " ms"
+        sendPing()
+    }, pingRefreshTime)
+    </script>
 </html>

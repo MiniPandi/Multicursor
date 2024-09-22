@@ -1,8 +1,10 @@
 var trailLenght = 2;
 var trailDespawn = 50;
+var lastPingTime = 0;
+var ws = null;
 
 document.addEventListener('DOMContentLoaded', () => {
-    const ws = new WebSocket('ws://147.185.221.22:55615');
+    ws = new WebSocket('ws://147.185.221.22:55615');
     const ownCursorDiv = document.createElement('div');
     ownCursorDiv.style.position = 'fixed';
     ownCursorDiv.style.backgroundColor = randomColor();
@@ -42,7 +44,9 @@ document.addEventListener('DOMContentLoaded', () => {
 
     ws.onmessage = e => {
         const data = JSON.parse(e.data);
-
+        if (data.pong) {
+            lastPingTime = data.pong;
+        }
         if (data.type === 'add') {
             const div = document.createElement('div');
             div.style.position = 'fixed';
@@ -95,4 +99,8 @@ document.addEventListener('DOMContentLoaded', () => {
 function randomColor() {
     const h = Math.floor(Math.random() * 360);
     return `hsl(${h}, 100%, 50%)`;
+}
+
+function sendPing(){
+    ws.send(JSON.stringify({ ping: Date.now() }));
 }
