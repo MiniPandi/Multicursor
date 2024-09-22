@@ -1,4 +1,8 @@
 const ws = require('ws')
+const express = require('express')
+
+const app = express()
+app.use(express.static('web'))
 
 const wss = new ws.Server({ port: 8080 })
 
@@ -56,3 +60,5 @@ function getUser(ws,url){
     if (!users[url][ws]) return null
     return users[url][ws].id
 }
+
+app.listen(3490)
