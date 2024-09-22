@@ -17,9 +17,9 @@ wss.on('connection', function connection(ws) {
         })
     if (users[ws.url]) {
         for (const url in users) {
-            for (const ws in users[url]) {
-              const userId = users[url][ws].id;
-              if (users[url][ws] && userId) {
+            for (const ws1 in users[url]) {
+              const userId = users[url][ws1].id;
+              if (users[url][ws1] && userId) {
                 ws.send(JSON.stringify({ type:"add", id:userId }));
               }
             }
