@@ -61,6 +61,6 @@ function getUser(ws,url){
     return users[url][ws].id
 }
 
-app.listen(() => {
+app.listen(3490, () => {
     console.log('Listening on port 8080 and 3490')
-}, 3490)
+})
