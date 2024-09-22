@@ -84,6 +84,8 @@ document.addEventListener('DOMContentLoaded', () => {
                                 trails.shift().remove();
                             }, trailDespawn);
                         }
+                    } else {
+                        console.log('no div')
                     }
                 }
             };

@@ -15,6 +15,11 @@ wss.on('connection', function connection(ws) {
                 client.send(JSON.stringify({ type:"add", id:getUser(ws,ws.url) }));
             }
         })
+    if (users[ws.url]) {
+        users[ws.url].forEach(user => {
+            ws.send(JSON.stringify({ type:"add", id:user.id }));
+        })
+    }
     ws.on('close', function close() {
         wss.clients.forEach(function each(client) {
             if (client !== ws && client.readyState === ws.OPEN) {
