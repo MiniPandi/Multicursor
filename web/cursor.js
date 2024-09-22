@@ -59,6 +59,10 @@ document.addEventListener('DOMContentLoaded', () => {
             ws.onmessage = e => {
                 const data = JSON.parse(e.data);
 
+                if (data.pong) {
+                    lastPingTime = data.pong;
+                }
+
                 if (data.type === 'update') {
                     const div = document.getElementById(data.id);
                     if (div) {
